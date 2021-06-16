@@ -62,7 +62,7 @@ class NerDataProcessor(object):
                     labels.clear()
                     continue
                 word,tag = line[0],line[1]
-                tag = tag if tag !='o' else '0'
+                tag = tag if tag !='o' else 'O'
                 if split_pattern.match(word) and len(sentence) >= self.max_len:
                     sentence.append(word)
                     labels.append(tag)
@@ -110,7 +110,7 @@ class NerDataProcessor(object):
         """将训练样本映射成数字，以及进行padding
            对标签进行 one-hot
         """
-        X = [[self.word2id]]
+        X = [[self.word2id.get(word,1) for word in x] for x in X ]
         X = pad_sequences(X,maxlen=self.max_len,value=0)
         y = [[self.tag2id.get(tag, 0) for tag in t] for t in y]
         y = pad_sequences(y, maxlen=self.max_len, value=0)
